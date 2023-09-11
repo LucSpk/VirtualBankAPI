@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.domain.controllers.users;
+package br.com.lucas.virtualBankAPI.controllers.users;
 
 import br.com.lucas.virtualBankAPI.domain.Usuario;
 import org.springframework.http.ResponseEntity;
