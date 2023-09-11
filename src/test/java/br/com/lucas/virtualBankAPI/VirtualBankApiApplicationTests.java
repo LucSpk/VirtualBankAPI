@@ -1,10 +1,10 @@
-package br.com.lucas.virtualBackAPI;
+package br.com.lucas.virtualBankAPI;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class VirtualBackApiApplicationTests {
+class VirtualBankApiApplicationTests {
 
 	@Test
 	void contextLoads() {

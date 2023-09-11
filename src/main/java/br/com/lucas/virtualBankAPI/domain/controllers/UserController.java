@@ -1,6 +1,6 @@
-package br.com.lucas.virtualBanckAPI.domain.controllers;
+package br.com.lucas.virtualBankAPI.domain.controllers;
 
-import br.com.lucas.virtualBanckAPI.domain.Usuario;
+import br.com.lucas.virtualBankAPI.domain.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
