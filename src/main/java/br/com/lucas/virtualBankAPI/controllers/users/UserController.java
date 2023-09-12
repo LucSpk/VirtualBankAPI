@@ -1,6 +1,6 @@
 package br.com.lucas.virtualBankAPI.controllers.users;
 
-import br.com.lucas.virtualBankAPI.domain.Usuario;
+import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

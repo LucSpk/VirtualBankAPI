@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.domain;
+package br.com.lucas.virtualBankAPI.domain.users;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

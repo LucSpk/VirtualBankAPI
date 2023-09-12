@@ -1,6 +1,6 @@
 package br.com.lucas.virtualBankAPI.services.userServices.impl;
 
-import br.com.lucas.virtualBankAPI.domain.Usuario;
+import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
