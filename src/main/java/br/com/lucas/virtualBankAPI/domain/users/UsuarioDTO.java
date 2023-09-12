@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.domain.users.dto;
+package br.com.lucas.virtualBankAPI.domain.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
