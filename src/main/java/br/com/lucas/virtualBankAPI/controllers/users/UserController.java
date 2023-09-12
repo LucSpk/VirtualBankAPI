@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController @RequestMapping("ap1/v1/user")
 public class UserController {
 
@@ -22,5 +25,16 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(modelMapper.map(userServices.findById(id), UsuarioDTO.class));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioDTO>> findAll() {
+        return ResponseEntity.ok().body(
+                userServices.findAll()
+                        .stream()
+                        .map(
+                                (user) -> modelMapper.map(user, UsuarioDTO.class)
+                        ).collect(Collectors.toList())
+        );
     }
 }
