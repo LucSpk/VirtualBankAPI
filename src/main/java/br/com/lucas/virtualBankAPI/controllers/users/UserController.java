@@ -30,13 +30,8 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> findAll() {
-        return ResponseEntity.ok().body(
-                userServices.findAll()
-                        .stream()
-                        .map(
-                                (user) -> modelMapper.map(user, UsuarioDTO.class)
-                        ).collect(Collectors.toList())
-        );
+        List<UsuarioDTO> response = userServices.findAll();
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping
