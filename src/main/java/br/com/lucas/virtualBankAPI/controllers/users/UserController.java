@@ -1,7 +1,9 @@
 package br.com.lucas.virtualBankAPI.controllers.users;
 
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
+import br.com.lucas.virtualBankAPI.domain.users.dto.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
     private UserServices userServices;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Usuario> findById(@PathVariable Integer id) {
-        return ResponseEntity.ok().body(userServices.findById(id));
+    public ResponseEntity<UsuarioDTO> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(modelMapper.map(userServices.findById(id), UsuarioDTO.class));
     }
 }
