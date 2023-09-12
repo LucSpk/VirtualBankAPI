@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServicesImpl implements UserServices {
@@ -22,9 +21,10 @@ public class UserServicesImpl implements UserServices {
     private ModelMapper modelMappe;
 
     @Override
-    public Usuario findById(Integer id) {
-        Optional<Usuario> user = userRepository.findById(id);
-        return user.orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+    public UsuarioDTO findById(Integer id) {
+        Usuario user = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+        return modelMappe.map(user, UsuarioDTO.class);
     }
 
     @Override
