@@ -36,8 +36,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> create(@RequestBody CreateUserRequest request) {
-        UsuarioDTO userDTO = modelMapper.map(request, UsuarioDTO.class);
-        UsuarioDTO userCreateDTO = userServices.create(userDTO);
+        UsuarioDTO userCreateDTO = userServices.create(modelMapper.map(request, Usuario.class));
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userCreateDTO.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
