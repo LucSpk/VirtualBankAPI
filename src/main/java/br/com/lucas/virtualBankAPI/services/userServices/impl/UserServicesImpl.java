@@ -37,17 +37,15 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public UsuarioDTO create(UsuarioDTO usuarioDTO) {
-        this.emailIsPresent(usuarioDTO);
-        Usuario user = modelMappe.map(usuarioDTO, Usuario.class);
-        Usuario userCreated = userRepository.save(user);
+    public UsuarioDTO create(Usuario usuario) {
+        this.emailIsPresent(usuario);
+        Usuario userCreated = userRepository.save(usuario);
         return modelMappe.map(userCreated, UsuarioDTO.class);
     }
 
-    public void emailIsPresent(UsuarioDTO usuarioDTO) {
-        Optional<Usuario> usuario = userRepository.findByEmail(usuarioDTO.getEmail());
-        if(usuario.isPresent())
+    public void emailIsPresent(Usuario usuario) {
+        Optional<Usuario> response = userRepository.findByEmail(usuario.getEmail());
+        if(response.isPresent())
             throw new DataIntegrityViolationException(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage());
     }
-
 }

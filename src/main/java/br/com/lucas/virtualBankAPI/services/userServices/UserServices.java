@@ -9,5 +9,5 @@ public interface UserServices {
 
     UsuarioDTO findById(Integer id);
     List<UsuarioDTO> findAll();
-    UsuarioDTO create(UsuarioDTO usuarioDTO);
+    UsuarioDTO create(Usuario usuario);
 }
