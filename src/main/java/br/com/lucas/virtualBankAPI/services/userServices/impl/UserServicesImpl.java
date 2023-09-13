@@ -4,6 +4,7 @@ import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
+import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +38,16 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public UsuarioDTO create(UsuarioDTO usuarioDTO) {
+        this.emailIsPresent(usuarioDTO);
         Usuario user = modelMappe.map(usuarioDTO, Usuario.class);
         Usuario userCreated = userRepository.save(user);
         return modelMappe.map(userCreated, UsuarioDTO.class);
+    }
+
+    public void emailIsPresent(UsuarioDTO usuarioDTO) {
+        Optional<Usuario> usuario = userRepository.findByEmail(usuarioDTO.getEmail());
+        if(usuario.isPresent())
+            throw new DataIntegrityViolationException(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage());
     }
 
 }
