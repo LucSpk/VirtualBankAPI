@@ -108,7 +108,7 @@ class UserServicesImplTest {
         when(repository.findByEmail(any())).thenReturn(Optional.empty());
         when(repository.save(any())).thenReturn(this.usuario);
 
-        UsuarioDTO createdUser = services.create(usuarioDTO);
+        UsuarioDTO createdUser = services.create(usuario);
 
         assertNotNull(createdUser);
         assertEquals(ID, createdUser.getId());
@@ -122,7 +122,7 @@ class UserServicesImplTest {
         when(repository.findByEmail(EMAIL)).thenReturn(Optional.of(usuario));
 
         try {
-            services.create(usuarioDTO);
+            services.create(usuario);
         } catch (Exception ex) {
             assertEquals(DataIntegrityViolationException.class, ex.getClass());
             assertEquals(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage(), ex.getMessage());
