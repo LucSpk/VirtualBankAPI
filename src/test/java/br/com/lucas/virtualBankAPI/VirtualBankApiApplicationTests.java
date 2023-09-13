@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class VirtualBankApiApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		VirtualBankApiApplication.main(new String[] {});
 	}
 
 }
