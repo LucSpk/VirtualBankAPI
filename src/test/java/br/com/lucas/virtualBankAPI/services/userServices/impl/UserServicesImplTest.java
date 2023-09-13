@@ -14,6 +14,8 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,12 +45,12 @@ class UserServicesImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         this.initializeVariables();
+        this.setModelMapper();
     }
 
     @Test
     public void whenFindByIdThenReturnAnUsuarioDTOInstance() {
         when(repository.findById(anyInt())).thenReturn(this.optionalUsuario);
-        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
 
         UsuarioDTO response = services.findById(ID);
 
@@ -76,7 +78,29 @@ class UserServicesImplTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnNonEmptyList() {
+        when(repository.findAll()).thenReturn(List.of(usuario));
+
+        List<UsuarioDTO> response = services.findAll();
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        assertEquals(1, response.size());
+
+        UsuarioDTO firstUser = response.get(0);
+        assertEquals(ID, firstUser.getId());
+        assertEquals(NAME, firstUser.getName());
+        assertEquals(EMAIL, firstUser.getEmail());
+        assertEquals(PASSWORD, firstUser.getPassword());
+    }
+
+    @Test
+    public void whenFindAllThenReturnEmptyList() {
+        when(repository.findAll()).thenReturn(new ArrayList<>());
+
+        List<UsuarioDTO> response = services.findAll();
+
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test
@@ -87,6 +111,10 @@ class UserServicesImplTest {
         this.usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
         this.usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
         this.optionalUsuario = Optional.of(new Usuario(ID, NAME, EMAIL, PASSWORD));
+    }
+
+    private void setModelMapper() {
+        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
     }
 
 }
