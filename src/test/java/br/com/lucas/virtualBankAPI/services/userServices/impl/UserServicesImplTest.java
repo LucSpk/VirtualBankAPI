@@ -35,7 +35,6 @@ class UserServicesImplTest {
 
     private Usuario usuario;
     private UsuarioDTO usuarioDTO;
-    private Optional<Usuario> optionalUsuario;
 
     public static final Integer ID = 1;
     public static final String NAME = "userTest";
@@ -51,7 +50,7 @@ class UserServicesImplTest {
 
     @Test
     public void whenFindByIdThenReturnAnUsuarioDTOInstance() {
-        when(repository.findById(anyInt())).thenReturn(this.optionalUsuario);
+        when(repository.findById(anyInt())).thenReturn(Optional.of(usuario));
 
         UsuarioDTO response = services.findById(ID);
 
@@ -133,7 +132,6 @@ class UserServicesImplTest {
     private void initializeVariables() {
         this.usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
         this.usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
-        this.optionalUsuario = Optional.of(new Usuario(ID, NAME, EMAIL, PASSWORD));
     }
 
     private void setModelMapper() {
