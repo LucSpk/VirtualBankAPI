@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -104,7 +105,17 @@ class UserServicesImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnUsuarioDTO() {
+        when(repository.findByEmail(any())).thenReturn(Optional.empty());
+        when(repository.save(any())).thenReturn(this.usuario);
+
+        UsuarioDTO createdUser = services.create(usuarioDTO);
+
+        assertNotNull(createdUser);
+        assertEquals(ID, createdUser.getId());
+        assertEquals(NAME, createdUser.getName());
+        assertEquals(EMAIL, createdUser.getEmail());
+        assertEquals(PASSWORD, createdUser.getPassword());
     }
 
     private void initializeVariables() {
@@ -115,6 +126,7 @@ class UserServicesImplTest {
 
     private void setModelMapper() {
         when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
+        when(modelMapper.map(this.usuarioDTO, Usuario.class)).thenReturn(this.usuario);
     }
 
 }
