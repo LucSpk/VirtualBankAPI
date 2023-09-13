@@ -4,12 +4,12 @@ import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
+import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -118,6 +118,18 @@ class UserServicesImplTest {
         assertEquals(PASSWORD, createdUser.getPassword());
     }
 
+    @Test
+    public void whenCreateWithExistingEmailThenThrowDataIntegrityViolationException() {
+        when(repository.findByEmail(EMAIL)).thenReturn(Optional.of(usuario));
+
+        try {
+            services.create(usuarioDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage(), ex.getMessage());
+        }
+    }
+
     private void initializeVariables() {
         this.usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
         this.usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
@@ -128,5 +140,4 @@ class UserServicesImplTest {
         when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
         when(modelMapper.map(this.usuarioDTO, Usuario.class)).thenReturn(this.usuario);
     }
-
 }
