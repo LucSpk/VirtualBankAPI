@@ -1,9 +1,8 @@
 package br.com.lucas.virtualBankAPI.controllers.users;
 
-import br.com.lucas.virtualBankAPI.domain.users.CreateUserRequest;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
-import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
+import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +33,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> create(@RequestBody CreateUserRequest request) {
-        UsuarioDTO userCreateDTO = userServices.create(modelMapper.map(request, Usuario.class));
+    public ResponseEntity<UsuarioDTO> create(@RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO userCreateDTO = userServices.create(modelMapper.map(usuarioDTO, Usuario.class));
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userCreateDTO.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }

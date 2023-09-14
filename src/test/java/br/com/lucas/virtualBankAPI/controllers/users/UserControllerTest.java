@@ -1,14 +1,12 @@
 package br.com.lucas.virtualBankAPI.controllers.users;
 
-import br.com.lucas.virtualBankAPI.domain.users.CreateUserRequest;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
-import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
+import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,8 +35,6 @@ class UserControllerTest {
 
     private Usuario usuario;
     private UsuarioDTO usuarioDTO;
-    private CreateUserRequest createUserRequest;
-    private List<Usuario> usuarioList;
 
     public static final Integer ID = 1;
     public static final String NAME = "userTest";
@@ -114,7 +110,7 @@ class UserControllerTest {
     public void whenCreateThenReturnUsuarioDTO() {
         when(userServices.create(any())).thenReturn(usuarioDTO);
 
-        ResponseEntity<UsuarioDTO> response = controller.create(createUserRequest);
+        ResponseEntity<UsuarioDTO> response = controller.create(usuarioDTO);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -146,11 +142,9 @@ class UserControllerTest {
     private void initializeVariables() {
         usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
         usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
-        createUserRequest = new CreateUserRequest(NAME, EMAIL, PASSWORD);
     }
 
     private void setModelMapper() {
-        when(modelMapper.map(createUserRequest, Usuario.class)).thenReturn(usuario);
         when(modelMapper.map(usuarioDTO, Usuario.class)).thenReturn(usuario);
     }
 }
