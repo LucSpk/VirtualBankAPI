@@ -2,6 +2,7 @@ package br.com.lucas.virtualBankAPI.controllers.exceptions;
 
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
+import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,23 @@ class ControllerExceptionHandlerTest {
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(StandardError.class, response.getBody().getClass());
         assertEquals(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage(), response.getBody().getError());
+        assertEquals(400, response.getBody().getStatus());
+    }
+
+    @Test
+    void whenDivergentDataReturnAResponseEntity() {
+        ResponseEntity<StandardError> response = controllerExceptionHandler
+                .divergentData(
+                        new DivergentDataException(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage()),
+                        new MockHttpServletRequest()
+                );
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage(), response.getBody().getError());
         assertEquals(400, response.getBody().getStatus());
     }
 }
