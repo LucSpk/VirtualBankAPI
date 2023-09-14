@@ -1,13 +1,13 @@
-package br.com.lucas.virtualBackAPI;
+package br.com.lucas.virtualBankAPI;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class VirtualBackApiApplication {
+public class VirtualBankApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VirtualBackApiApplication.class, args);
+		SpringApplication.run(VirtualBankApiApplication.class, args);
 	}
 
 }

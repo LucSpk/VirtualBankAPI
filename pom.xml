@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.lucas</groupId>
-	<artifactId>virtualBackAPI</artifactId>
+	<artifactId>virtualBankAPI</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>virtualBackAPI</name>
+	<name>virtualBankAPI</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
@@ -45,6 +45,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>2.4.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
