@@ -2,7 +2,8 @@ package br.com.lucas.virtualBankAPI.enums.exceptions;
 
 public enum ErrorMessage {
     OBJETO_NAO_ENCONTRADO("Objeto não encontrado"),
-    EAMIL_JA_CADASTRADO("E-mail já cadastrado no sistema");
+    EAMIL_JA_CADASTRADO("E-mail já cadastrado no sistema"),
+    DIVERGENCIA_NOS_DADOS("Há divergencia nos dados");
 
     private final String message;
 

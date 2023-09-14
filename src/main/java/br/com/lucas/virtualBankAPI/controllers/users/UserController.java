@@ -12,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController @RequestMapping("ap1/v1/user")
 public class UserController {
@@ -39,5 +38,11 @@ public class UserController {
         UsuarioDTO userCreateDTO = userServices.create(modelMapper.map(request, Usuario.class));
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userCreateDTO.getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UsuarioDTO> update(@RequestBody UsuarioDTO usuarioDTO, @PathVariable Integer id) {
+        UsuarioDTO usuarioCreated = userServices.update(modelMapper.map(usuarioDTO, Usuario.class), id);
+        return ResponseEntity.ok().body(usuarioCreated);
     }
 }

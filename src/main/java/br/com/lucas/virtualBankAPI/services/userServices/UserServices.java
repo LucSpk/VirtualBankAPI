@@ -10,4 +10,5 @@ public interface UserServices {
     UsuarioDTO findById(Integer id);
     List<UsuarioDTO> findAll();
     UsuarioDTO create(Usuario usuario);
+    UsuarioDTO update(Usuario usuario, Integer id);
 }
