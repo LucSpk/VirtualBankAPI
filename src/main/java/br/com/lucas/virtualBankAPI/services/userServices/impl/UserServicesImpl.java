@@ -5,6 +5,7 @@ import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
+import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
 import org.modelmapper.ModelMapper;
@@ -43,9 +44,26 @@ public class UserServicesImpl implements UserServices {
         return modelMappe.map(userCreated, UsuarioDTO.class);
     }
 
+    @Override
+    public UsuarioDTO update(Usuario usuario, Integer id) {
+        if(!usuario.getId().equals(id))
+            throw new DivergentDataException(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage());
+
+        this.emailIsPresent(usuario);
+        Usuario user = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+
+        user.setName(usuario.getName());
+        user.setEmail(usuario.getEmail());
+        user.setPassword(usuario.getPassword());
+
+        Usuario usuarioUpdated = userRepository.save(user);
+        return modelMappe.map(usuarioUpdated, UsuarioDTO.class);
+    }
+
     public void emailIsPresent(Usuario usuario) {
         Optional<Usuario> response = userRepository.findByEmail(usuario.getEmail());
-        if(response.isPresent())
+        if(response.isPresent() && !response.get().getId().equals(usuario.getId()))
             throw new DataIntegrityViolationException(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage());
     }
 }
