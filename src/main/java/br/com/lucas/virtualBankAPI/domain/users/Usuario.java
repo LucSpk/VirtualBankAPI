@@ -1,12 +1,11 @@
 package br.com.lucas.virtualBankAPI.domain.users;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@NoArgsConstructor @AllArgsConstructor @Data
+@NoArgsConstructor @AllArgsConstructor
+@Getter @Setter
 public class Usuario {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
