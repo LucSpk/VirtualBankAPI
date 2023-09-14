@@ -22,26 +22,26 @@ public class UserServicesImpl implements UserServices {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private ModelMapper modelMappe;
+    private ModelMapper modelMapper;
 
     @Override
     public UsuarioDTO findById(Integer id) {
         Usuario user = userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
-        return modelMappe.map(user, UsuarioDTO.class);
+        return modelMapper.map(user, UsuarioDTO.class);
     }
 
     @Override
     public List<UsuarioDTO> findAll() {
         List<Usuario> usuarioList = userRepository.findAll();
-        return usuarioList.stream().map((user) -> modelMappe.map(user, UsuarioDTO.class)).collect(Collectors.toList());
+        return usuarioList.stream().map((user) -> modelMapper.map(user, UsuarioDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public UsuarioDTO create(Usuario usuario) {
         this.emailIsPresent(usuario);
         Usuario userCreated = userRepository.save(usuario);
-        return modelMappe.map(userCreated, UsuarioDTO.class);
+        return modelMapper.map(userCreated, UsuarioDTO.class);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserServicesImpl implements UserServices {
         user.setPassword(usuario.getPassword());
 
         Usuario usuarioUpdated = userRepository.save(user);
-        return modelMappe.map(usuarioUpdated, UsuarioDTO.class);
+        return modelMapper.map(usuarioUpdated, UsuarioDTO.class);
     }
 
     public void emailIsPresent(Usuario usuario) {
