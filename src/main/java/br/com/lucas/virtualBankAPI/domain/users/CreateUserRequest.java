@@ -3,9 +3,8 @@ package br.com.lucas.virtualBankAPI.domain.users;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Getter
 public class CreateUserRequest {
 
     private String name;
