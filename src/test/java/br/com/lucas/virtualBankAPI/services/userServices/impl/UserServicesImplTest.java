@@ -5,6 +5,7 @@ import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
+import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -127,6 +128,31 @@ class UserServicesImplTest {
             assertEquals(DataIntegrityViolationException.class, ex.getClass());
             assertEquals(ErrorMessage.EAMIL_JA_CADASTRADO.getMessage(), ex.getMessage());
         }
+    }
+
+    @Test
+    public void whenUpdateThenReturnUpdatedUsuarioDTO() {
+        when(repository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(repository.save(usuario)).thenReturn(usuario);
+
+        UsuarioDTO response = services.update(usuario, ID);
+
+        assertNotNull(response);
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+    }
+
+    @Test
+    public void whenUpdateWithDivergentDataThenThrowDivergentDataException() {
+        try {
+            assertThrows(DivergentDataException.class, () -> services.update(usuario, 2));
+        } catch (Exception ex) {
+            assertEquals(DivergentDataException.class, ex.getClass());
+            assertEquals(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage(), ex.getMessage());
+        }
+
     }
 
     private void initializeVariables() {
