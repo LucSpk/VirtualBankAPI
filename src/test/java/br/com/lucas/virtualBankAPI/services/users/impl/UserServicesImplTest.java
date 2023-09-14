@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.services.userServices.impl;
+package br.com.lucas.virtualBankAPI.services.users.impl;
 
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;

@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.services.userServices.impl;
+package br.com.lucas.virtualBankAPI.services.users.impl;
 
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
@@ -7,7 +7,7 @@ import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
 import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
-import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
+import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
