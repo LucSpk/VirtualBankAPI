@@ -14,4 +14,10 @@ public class AccountDTO {
     private String accNumber;
     private Double balance;
     private Usuario owner;
+
+    public AccountDTO(Long id, String accNumber, Double balance) {
+        this.id = id;
+        this.accNumber = accNumber;
+        this.balance = balance;
+    }
 }

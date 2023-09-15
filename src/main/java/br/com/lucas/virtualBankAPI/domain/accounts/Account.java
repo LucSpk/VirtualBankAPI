@@ -21,4 +21,10 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Usuario owner;
+
+    public Account(Long id, String accNumber, Double balance) {
+        this.id = id;
+        this.accNumber = accNumber;
+        this.balance = balance;
+    }
 }
