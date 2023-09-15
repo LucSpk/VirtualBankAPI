@@ -13,6 +13,8 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,8 +34,8 @@ class AccountServicesImplTest {
     private Account account;
     private AccountDTO accountDTO;
 
-    public static final Long ACCOUNT_ID = 1L;
-    public static final String ACCOUNT_NUMBER = "123456";
+    public static final Long ID = 1L;
+    public static final String ACC_NUMBER = "123456";
     public static final Double BALANCE = 1000.0;
 
     @BeforeEach
@@ -47,12 +49,12 @@ class AccountServicesImplTest {
     public void whenFindByIdThenReturnAnAccountDTOInstance() {
         when(repository.findById(anyLong())).thenReturn(Optional.of(account));
 
-        AccountDTO response = services.findById(ACCOUNT_ID);
+        AccountDTO response = services.findById(ID);
 
         assertNotNull(response);
         assertEquals(AccountDTO.class, response.getClass());
-        assertEquals(ACCOUNT_ID, response.getId());
-        assertEquals(ACCOUNT_NUMBER, response.getAccNumber());
+        assertEquals(ID, response.getId());
+        assertEquals(ACC_NUMBER, response.getAccNumber());
         assertEquals(BALANCE, response.getBalance());
     }
 
@@ -61,7 +63,7 @@ class AccountServicesImplTest {
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
         try {
-            services.findById(ACCOUNT_ID);
+            services.findById(ID);
             fail("Expected ObjectNotFoundException to be thrown");
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
@@ -70,7 +72,29 @@ class AccountServicesImplTest {
     }
 
     @Test
-    public void findAll() {
+    public void whenFindAllThenReturnNonEmptyList() {
+        when(repository.findAll()).thenReturn(List.of(account));
+
+        List<AccountDTO> response = services.findAll();
+
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        assertEquals(1, response.size());
+
+        AccountDTO firstAccount = response.get(0);
+        assertEquals(ID, firstAccount.getId());
+        assertEquals(ACC_NUMBER, firstAccount.getAccNumber());
+        assertEquals(BALANCE, firstAccount.getBalance());
+    }
+
+    @Test
+    public void whenFindAllThenReturnEmptyList() {
+        when(repository.findAll()).thenReturn(new ArrayList<>());
+
+        List<AccountDTO> response = services.findAll();
+
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
     }
 
     @Test
@@ -86,8 +110,8 @@ class AccountServicesImplTest {
     }
 
     private void initializeVariables() {
-        this.account = new Account(ACCOUNT_ID, ACCOUNT_NUMBER, BALANCE);
-        this.accountDTO = new AccountDTO(ACCOUNT_ID, ACCOUNT_NUMBER, BALANCE);
+        this.account = new Account(ID, ACC_NUMBER, BALANCE);
+        this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
     }
 
     private void setModelMapper() {
