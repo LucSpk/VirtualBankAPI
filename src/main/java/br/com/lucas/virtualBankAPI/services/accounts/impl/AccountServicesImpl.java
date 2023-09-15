@@ -9,6 +9,7 @@ import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountServicesImpl implements AccountServices {
 
@@ -24,7 +25,8 @@ public class AccountServicesImpl implements AccountServices {
 
     @Override
     public List<AccountDTO> findAll() {
-        return null;
+        List<Account> accounts = accountRepository.findAll();
+        return accounts.stream().map((acc) -> modelMapper.map(acc, AccountDTO.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -41,4 +43,6 @@ public class AccountServicesImpl implements AccountServices {
     public void delete(Integer id) {
 
     }
+
+
 }
