@@ -164,11 +164,6 @@ class UserServicesImplTest {
         Mockito.verify(repository, Mockito.times(1)).deleteById(Mockito.anyInt());
     }
 
-    private void initializeVariables() {
-        this.usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
-        this.usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
-    }
-
     @Test
     void whenDeleteWithObjectNotFoundException() {
         Mockito.when(repository.findById(Mockito.anyInt()))
@@ -180,6 +175,12 @@ class UserServicesImplTest {
             assertEquals(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
         }
     }
+
+    private void initializeVariables() {
+        this.usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
+        this.usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
+    }
+
 
     private void setModelMapper() {
         when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
