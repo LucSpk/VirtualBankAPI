@@ -28,7 +28,7 @@ class UserControllerTest {
     private UserController controller;
 
     @Mock
-    private UserServices userServices;
+    private UserServices services;
 
     @Mock
     private ModelMapper modelMapper;
@@ -50,7 +50,7 @@ class UserControllerTest {
 
     @Test
     public void whenFindByIdThenReturnAnUsuarioDTOInstance() {
-        when(userServices.findById(anyInt())).thenReturn(usuarioDTO);
+        when(services.findById(anyInt())).thenReturn(usuarioDTO);
 
         ResponseEntity<UsuarioDTO> response = controller.findById(ID);
 
@@ -64,12 +64,12 @@ class UserControllerTest {
         assertEquals(EMAIL, responseBody.getEmail());
         assertEquals(PASSWORD, responseBody.getPassword());
 
-        verify(userServices, times(1)).findById(ID);
+        verify(services, times(1)).findById(ID);
     }
 
     @Test
     public void whenFindAllThenReturnNonEmptyList() {
-        when(userServices.findAll()).thenReturn(List.of(usuarioDTO));
+        when(services.findAll()).thenReturn(List.of(usuarioDTO));
 
         ResponseEntity<List<UsuarioDTO>> response = controller.findAll();
 
@@ -87,12 +87,12 @@ class UserControllerTest {
         assertEquals(EMAIL, firstUser.getEmail());
         assertEquals(PASSWORD, firstUser.getPassword());
 
-        verify(userServices, times(1)).findAll();
+        verify(services, times(1)).findAll();
     }
 
     @Test
     public void whenFindAllThenReturnEmptyList() {
-        when(userServices.findAll()).thenReturn(new ArrayList<>());
+        when(services.findAll()).thenReturn(new ArrayList<>());
 
         ResponseEntity<List<UsuarioDTO>> response = controller.findAll();
 
@@ -103,12 +103,12 @@ class UserControllerTest {
         assertNotNull(responseBody);
         assertTrue(responseBody.isEmpty());
 
-        verify(userServices, times(1)).findAll();
+        verify(services, times(1)).findAll();
     }
 
     @Test
     public void whenCreateThenReturnUsuarioDTO() {
-        when(userServices.create(any())).thenReturn(usuarioDTO);
+        when(services.create(any())).thenReturn(usuarioDTO);
 
         ResponseEntity<UsuarioDTO> response = controller.create(usuarioDTO);
 
@@ -118,12 +118,12 @@ class UserControllerTest {
         URI expectedUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(ID).toUri();
         assertEquals(expectedUri, response.getHeaders().getLocation());
 
-        verify(userServices, times(1)).create(usuario);
+        verify(services, times(1)).create(usuario);
     }
 
     @Test
     public void whenUpdateThenReturnSucess() {
-        when(userServices.update(any(), anyInt())).thenReturn(usuarioDTO);
+        when(services.update(any(), anyInt())).thenReturn(usuarioDTO);
 
         ResponseEntity<UsuarioDTO> response = controller.update(usuarioDTO, ID);
 
@@ -137,6 +137,18 @@ class UserControllerTest {
         assertEquals(NAME, response.getBody().getName());
         assertEquals(EMAIL, response.getBody().getEmail());
 
+    }
+
+    @Test
+    public void whenDeleteTheReturnSuccess() {
+        doNothing().when(services).delete(anyInt());
+
+        ResponseEntity<?> response = controller.delete(ID);
+
+        assertNotNull(response);
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(services, times(1)).delete(anyInt());
     }
 
     private void initializeVariables() {
