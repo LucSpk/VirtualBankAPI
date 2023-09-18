@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.services.userServices.impl;
+package br.com.lucas.virtualBankAPI.services.users.impl;
 
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,14 +68,14 @@ class UserServicesImplTest {
 
     @Test
     public void whenFindByIdThenReturnAnObjectNotFoundException() {
-        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
 
         try {
             services.findById(ID);
             fail("Expected ObjectNotFoundException to be thrown");
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+            assertEquals(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
         }
     }
 
@@ -152,13 +153,34 @@ class UserServicesImplTest {
             assertEquals(DivergentDataException.class, ex.getClass());
             assertEquals(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage(), ex.getMessage());
         }
+    }
 
+    @Test
+    void whenDeleteWithSucess() {
+        when(repository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        Mockito.doNothing().when(repository).deleteById(anyInt());
+
+        services.delete(ID);
+        Mockito.verify(repository, Mockito.times(1)).deleteById(Mockito.anyInt());
+    }
+
+    @Test
+    void whenDeleteWithObjectNotFoundException() {
+        Mockito.when(repository.findById(Mockito.anyInt()))
+                .thenThrow(new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
+        try {
+            services.delete(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+        }
     }
 
     private void initializeVariables() {
         this.usuario = new Usuario(ID, NAME, EMAIL, PASSWORD);
         this.usuarioDTO = new UsuarioDTO(ID, NAME, EMAIL, PASSWORD);
     }
+
 
     private void setModelMapper() {
         when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);

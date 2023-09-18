@@ -1,4 +1,4 @@
-package br.com.lucas.virtualBankAPI.services.userServices.impl;
+package br.com.lucas.virtualBankAPI.services.users.impl;
 
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
@@ -7,7 +7,7 @@ import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
 import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
-import br.com.lucas.virtualBankAPI.services.userServices.UserServices;
+import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class UserServicesImpl implements UserServices {
     @Override
     public UsuarioDTO findById(Integer id) {
         Usuario user = userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
         return modelMapper.map(user, UsuarioDTO.class);
     }
 
@@ -51,7 +51,7 @@ public class UserServicesImpl implements UserServices {
 
         this.emailIsPresent(usuario);
         Usuario user = userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
 
         user.setName(usuario.getName());
         user.setEmail(usuario.getEmail());
@@ -59,6 +59,12 @@ public class UserServicesImpl implements UserServices {
 
         Usuario usuarioUpdated = userRepository.save(user);
         return modelMapper.map(usuarioUpdated, UsuarioDTO.class);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        this.findById(id);
+        userRepository.deleteById(id);
     }
 
     public void emailIsPresent(Usuario usuario) {
