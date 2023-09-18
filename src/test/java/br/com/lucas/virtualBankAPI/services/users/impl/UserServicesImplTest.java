@@ -68,14 +68,14 @@ class UserServicesImplTest {
 
     @Test
     public void whenFindByIdThenReturnAnObjectNotFoundException() {
-        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
 
         try {
             services.findById(ID);
             fail("Expected ObjectNotFoundException to be thrown");
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+            assertEquals(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
         }
     }
 
@@ -167,12 +167,12 @@ class UserServicesImplTest {
     @Test
     void whenDeleteWithObjectNotFoundException() {
         Mockito.when(repository.findById(Mockito.anyInt()))
-                .thenThrow(new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+                .thenThrow(new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
         try {
             services.delete(ID);
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+            assertEquals(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
         }
     }
 

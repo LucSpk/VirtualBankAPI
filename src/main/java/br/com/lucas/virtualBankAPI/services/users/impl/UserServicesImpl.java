@@ -27,7 +27,7 @@ public class UserServicesImpl implements UserServices {
     @Override
     public UsuarioDTO findById(Integer id) {
         Usuario user = userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
         return modelMapper.map(user, UsuarioDTO.class);
     }
 
@@ -51,7 +51,7 @@ public class UserServicesImpl implements UserServices {
 
         this.emailIsPresent(usuario);
         Usuario user = userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.USUARIO_NAO_ENCONTRADO.getMessage()));
 
         user.setName(usuario.getName());
         user.setEmail(usuario.getEmail());
