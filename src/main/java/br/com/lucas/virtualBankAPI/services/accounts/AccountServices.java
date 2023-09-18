@@ -9,7 +9,7 @@ public interface AccountServices {
 
     AccountDTO findById(Long id);
     List<AccountDTO> findAll();
-    AccountDTO create(Account usuario);
-    AccountDTO update(Account usuario, Integer id);
-    void delete(Integer id);
+    AccountDTO create(Account account, Integer userId);
+    AccountDTO update(Account account, Long id);
+    void delete(Long id);
 }
