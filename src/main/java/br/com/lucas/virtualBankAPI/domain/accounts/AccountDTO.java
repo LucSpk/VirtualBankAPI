@@ -1,6 +1,7 @@
 package br.com.lucas.virtualBankAPI.domain.accounts;
 
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
+import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ public class AccountDTO {
     private Long id;
     private String accNumber;
     private Double balance;
-    private Usuario owner;
+    private UsuarioDTO owner;
 
     public AccountDTO(Long id, String accNumber, Double balance) {
         this.id = id;
