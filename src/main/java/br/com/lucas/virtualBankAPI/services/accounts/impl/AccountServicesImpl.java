@@ -8,6 +8,7 @@ import br.com.lucas.virtualBankAPI.repositories.accounts.AccountRepository;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.accounts.AccountServices;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
+import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.modelmapper.ModelMapper;
@@ -31,7 +32,7 @@ public class AccountServicesImpl implements AccountServices {
     @Override
     public AccountDTO findById(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage()));
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.NUM_ACC_NAO_ENCONTRADO.getMessage()));
         return modelMapper.map(account, AccountDTO.class);
     }
 
@@ -52,13 +53,25 @@ public class AccountServicesImpl implements AccountServices {
     }
 
     @Override
-    public AccountDTO update(Account usuario, Long id) {
-        return null;
+    public AccountDTO update(Account account, Long id) {
+        if(account.getId().equals(id))
+            throw new DivergentDataException(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage());
+
+        this.accIsPresent(account);
+
+        Account acc = accountRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(ErrorMessage.NUM_ACC_NAO_ENCONTRADO.getMessage()));
+
+        acc.setBalance(account.getBalance());
+
+        Account accountUpdated = accountRepository.save(acc);
+        return modelMapper.map(accountUpdated, AccountDTO.class);
     }
 
     @Override
     public void delete(Long id) {
-
+        this.findById(id);
+        accountRepository.deleteById(id);
     }
 
     private void accIsPresent(Account account) {

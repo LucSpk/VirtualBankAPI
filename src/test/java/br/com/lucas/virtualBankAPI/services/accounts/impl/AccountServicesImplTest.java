@@ -67,7 +67,7 @@ class AccountServicesImplTest {
             fail("Expected ObjectNotFoundException to be thrown");
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals(ErrorMessage.OBJETO_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+            assertEquals(ErrorMessage.NUM_ACC_NAO_ENCONTRADO.getMessage(), ex.getMessage());
         }
     }
 
