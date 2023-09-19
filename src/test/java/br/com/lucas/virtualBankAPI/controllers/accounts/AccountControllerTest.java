@@ -43,7 +43,7 @@ class AccountControllerTest {
     }
 
     @Test
-    void whenFindByIdThenReturnSucess() {
+    void whenFindByIdThenReturnSuccess() {
         when(services.findById(anyLong())).thenReturn(accountDTO);
 
         ResponseEntity<AccountDTO> response = controller.findById(ID);
