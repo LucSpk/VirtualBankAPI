@@ -197,7 +197,25 @@ class AccountServicesImplTest {
     }
 
     @Test
-    public void delete() {
+    public void whenDeleteThenReturnSuccess() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(account));
+        doNothing().when(repository).deleteById(anyLong());
+
+        repository.deleteById(ID);
+
+        verify(repository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void whenDeleteTherReturnObjectNotFoundException() {
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+
+        try {
+            services.delete(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(ErrorMessage.NUM_ACC_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+        }
     }
 
     private void initializeVariables() {
