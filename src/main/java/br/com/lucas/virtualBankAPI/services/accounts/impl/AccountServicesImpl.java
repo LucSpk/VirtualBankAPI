@@ -54,7 +54,7 @@ public class AccountServicesImpl implements AccountServices {
 
     @Override
     public AccountDTO update(Account account, Long id) {
-        if(account.getId().equals(id))
+        if(!account.getId().equals(id))
             throw new DivergentDataException(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage());
 
         this.accIsPresent(account);
