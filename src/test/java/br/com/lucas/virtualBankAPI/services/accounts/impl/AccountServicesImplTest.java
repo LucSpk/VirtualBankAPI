@@ -6,8 +6,8 @@ import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.accounts.AccountRepository;
-import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
+import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
 import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
 import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.junit.jupiter.api.BeforeEach;
@@ -142,7 +142,58 @@ class AccountServicesImplTest {
     }
 
     @Test
-    public void update() {
+    public void whenUpdateThenReturnUpdatedAccountDTO() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(account));
+        when(repository.save(account)).thenReturn(account);
+
+        AccountDTO response = services.update(account, ID);
+
+        assertNotNull(response);
+        assertEquals(AccountDTO.class, response.getClass());
+
+        assertEquals(ID, response.getId());
+        assertEquals(ACC_NUMBER, response.getAccNumber());
+
+        verify(repository, times(1)).save(any(Account.class));
+    }
+
+    @Test
+    public void whenUpdateThenReturnDivergentDataException() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(account));
+
+        try {
+            this.services.update(account, ID + 1);
+            fail("Expected DivergentDataException to be thrown");
+        } catch (Exception ex) {
+            assertEquals(DivergentDataException.class, ex.getClass());
+            assertEquals(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage(), ex.getMessage());
+        }
+    }
+
+    @Test
+    public void whenUpdateReturnDataIntegrityViolationException() {
+        when(repository.findByAccNumber(any())).thenReturn(Optional.of(existingAccount));
+        when(repository.findById(anyLong())).thenReturn(Optional.of(account));
+
+        try {
+            services.update(account, ID);
+            fail("Expected DataIntegrityViolationException to be thrown");
+        } catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals(ErrorMessage.NUMERO_ACC_JA_CADASTRADO.getMessage(), ex.getMessage());
+        }
+    }
+
+    @Test
+    public void whenUpdateThenReturnObjectNotFoundException() {
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        try {
+            services.findById(ID);
+            fail("Expected ObjectNotFoundException to be thrown");
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(ErrorMessage.NUM_ACC_NAO_ENCONTRADO.getMessage(), ex.getMessage());
+        }
     }
 
     @Test
