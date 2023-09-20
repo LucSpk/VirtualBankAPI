@@ -147,7 +147,15 @@ class AccountControllerTest {
     }
 
     @Test
-    void delete() {
+    void whenDeleteThenReturnSuccess() {
+        doNothing().when(services).delete(anyLong());
+
+        ResponseEntity<?> response = controller.delete(ID);
+
+        assertNotNull(response);
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(services, times(1)).delete(anyLong());
     }
 
     private void setModelMapper() {
