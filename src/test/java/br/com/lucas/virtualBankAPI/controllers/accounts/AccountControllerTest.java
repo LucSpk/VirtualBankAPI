@@ -14,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -62,7 +65,38 @@ class AccountControllerTest {
     }
 
     @Test
-    void findAll() {
+    void whenFindAllThenReturnAnListNonEmpty() {
+        when(services.findAll()).thenReturn(List.of(accountDTO));
+
+        ResponseEntity<List<AccountDTO>> response = controller.findAll();
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        List<AccountDTO> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertFalse(responseBody.isEmpty());
+        assertEquals(1, responseBody.size());
+
+        AccountDTO firstElement = responseBody.get(0);
+        assertEquals(ID, firstElement.getId());
+        assertEquals(ACC_NUMBER, firstElement.getAccNumber());
+    }
+
+    @Test
+    void whenFindAllThenReturnAnListEmpty() {
+        when(services.findAll()).thenReturn(new ArrayList<>());
+
+        ResponseEntity<List<AccountDTO>> response = controller.findAll();
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        List<AccountDTO> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.isEmpty());
+
+        verify(services, times(1)).findAll();
     }
 
     @Test
