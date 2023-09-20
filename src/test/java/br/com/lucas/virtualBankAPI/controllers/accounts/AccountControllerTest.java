@@ -130,7 +130,20 @@ class AccountControllerTest {
     }
 
     @Test
-    void update() {
+    void whenUpdateThenReturnSuccess() {
+        when(services.update(any(), anyLong())).thenReturn(accountDTO);
+
+        ResponseEntity<AccountDTO> response = controller.update(accountDTO, ID);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(AccountDTO.class, response.getBody().getClass());
+
+        assertEquals(ID, response.getBody().getId());
+        assertEquals(ACC_NUMBER, response.getBody().getAccNumber());
+        assertEquals(BALANCE, response.getBody().getBalance());
     }
 
     @Test
