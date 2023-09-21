@@ -122,7 +122,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void whenUpdateThenReturnSucess() {
+    public void whenUpdateThenReturnSuccess() {
         when(services.update(any(), anyInt())).thenReturn(usuarioDTO);
 
         ResponseEntity<UsuarioDTO> response = controller.update(usuarioDTO, ID);
