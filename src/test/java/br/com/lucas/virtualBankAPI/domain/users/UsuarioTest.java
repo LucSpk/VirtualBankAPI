@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UsuarioTest {
 
-    private Usuario usuario = new Usuario();
+    private final Usuario usuario = new Usuario();
 
     private static final Integer ID = 1;
     private static final String NAME = "nameTest";
