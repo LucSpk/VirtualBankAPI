@@ -1,5 +1,6 @@
 package br.com.lucas.virtualBankAPI.domain.users;
 
+import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.repositories.users.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,9 @@ class UsuarioTest {
     private static final String NAME = "nameTest";
     private static final String EMAIL = "email@teste.com";
     private static final String PASSWORD = "123456";
+    public static final Long ACC_ID = 1L;
+    public static final String ACC_NUMBER = "123456";
+    public static final Double ACC_BALANCE = 0.0;
 
     @BeforeEach
     void setUp() {
@@ -57,5 +61,12 @@ class UsuarioTest {
         assertEquals(NAME, test.getName());
         assertEquals(EMAIL, test.getEmail());
         assertEquals(PASSWORD, test.getPassword());
+    }
+
+    @Test
+    void testAccountList() {
+        Account account = new Account(ACC_ID, ACC_NUMBER, ACC_BALANCE);
+        this.usuario.setAccountList(List.of(account));
+        assertEquals(1, this.usuario.getAccountList().size());
     }
 }

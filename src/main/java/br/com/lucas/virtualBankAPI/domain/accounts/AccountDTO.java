@@ -1,14 +1,9 @@
 package br.com.lucas.virtualBankAPI.domain.accounts;
 
-import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Getter
 public class AccountDTO {
 
     private Long id;
