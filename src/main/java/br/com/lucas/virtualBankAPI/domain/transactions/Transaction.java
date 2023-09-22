@@ -31,4 +31,10 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "destination_account_id")
     private Account destinationAccount;
+
+    public Transaction(TransactionType transactionType, Double amount, LocalDateTime timestamp) {
+        this.transactionType = transactionType;
+        this.amount = amount;
+        this.timestamp = timestamp;
+    }
 }
