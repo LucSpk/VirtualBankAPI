@@ -4,11 +4,12 @@ import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 
-@NoArgsConstructor @AllArgsConstructor @Getter
+@NoArgsConstructor @AllArgsConstructor @Getter @Setter
 public class TransactionDTO {
 
     private Long id;
