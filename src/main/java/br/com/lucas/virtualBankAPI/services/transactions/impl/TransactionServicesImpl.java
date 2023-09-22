@@ -4,6 +4,7 @@ import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionRequest;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.enums.transactions.TransactionType;
 import br.com.lucas.virtualBankAPI.repositories.transactions.TransactionRepository;
@@ -58,11 +59,11 @@ public class TransactionServicesImpl implements TransactionServices {
 
     }
 
-    public void transaction(Transaction transaction, Long sourceAccountId, Long destinationAccountId) {
-        Account sourceAccount = this.findAccount(sourceAccountId);
-        Account destinationAccount = this.findAccount(destinationAccountId);
+    public void transaction(TransactionRequest transaction) {
+        Account sourceAccount = this.findAccount(transaction.getSourceAccountId());
+        Account destinationAccount = this.findAccount(transaction.getDestinationAccountId());
 
-        transactionManager(transaction.getTransactionType(), sourceAccount, destinationAccount, transaction.getAmount());
+        transactionManager(transaction.getType(), sourceAccount, destinationAccount, transaction.getAmount());
     }
 
     private void transactionManager(TransactionType type, Account sourceAccount, Account destinationAccount, double amount) {
