@@ -6,7 +6,8 @@ public enum ErrorMessage {
     NUMERO_ACC_JA_CADASTRADO("Número da conta já existe no sistem"),
     DIVERGENCIA_NOS_DADOS("Há divergencia nos dados"),
     USUARIO_NAO_ENCONTRADO("Usuário não encontrado"),
-    NUM_ACC_NAO_ENCONTRADO("Número de Conta não encontrado");
+    NUM_ACC_NAO_ENCONTRADO("Número de Conta não encontrado"),
+    TRANSACTION_NAO_ENCONTRADO("Transação não encontrada");
 
     private final String message;
 
