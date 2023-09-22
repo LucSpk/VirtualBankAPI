@@ -2,6 +2,7 @@ package br.com.lucas.virtualBankAPI.controllers.transactions;
 
 import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionRequest;
 import br.com.lucas.virtualBankAPI.services.transactions.TransactionServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,12 @@ public class TransactionController {
     public ResponseEntity<TransactionDTO> update(@RequestBody TransactionDTO request, @PathVariable Long id) {
         TransactionDTO response = transactionServices.update(modelMapper.map(request, Transaction.class), id);
         return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> transaction(@RequestBody TransactionRequest request) {
+        transactionServices.transaction(request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/{id}")
