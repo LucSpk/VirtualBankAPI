@@ -44,33 +44,39 @@ public class TransactionServicesImpl implements TransactionServices {
         return response.stream().map((trs) -> modelMapper.map(trs, TransactionDTO.class)).collect(Collectors.toList());
     }
 
-    public void transaction(TransactionRequest transaction) {
-        Account sourceAccount = this.findAccount(transaction.getSourceAccountId());
-        Account destinationAccount = this.findAccount(transaction.getDestinationAccountId());
+    public void transaction(TransactionRequest request) {
+        if(request.getType() == null)
+            throw new IllegalArgumentException(ErrorMessage.TRANSACAO_NECESSARIA.getMessage());
 
-        transactionManager(transaction.getType(), sourceAccount, destinationAccount, transaction.getAmount());
-    }
-
-    private void transactionManager(TransactionType type, Account sourceAccount, Account destinationAccount, double amount) {
-        if(type == null)
-            throw new IllegalArgumentException(ErrorMessage.TRANSACAO_NAO_ENCONTRADA.getMessage());
-
-        if(type.getValue() == 0) {
-            transference(sourceAccount, destinationAccount, amount);
+        if(request.getType().getValue() == 0) {
+            this.transference(request.getSourceAccountId(), request.getDestinationAccountId(), request.getAmount());
             return;
         }
-        if(type.getValue() == 1) {
-            payment(sourceAccount, destinationAccount, amount);
+        if(request.getType().getValue() == 1) {
+            this.payment(request.getSourceAccountId(), request.getDestinationAccountId(), request.getAmount());
             return;
         }
+        if(request.getType().getValue() == 2) {
+            this.deposit(request.getDestinationAccountId(), request.getAmount());
+            return;
+        }
+        if(request.getType().getValue() == 3) {
+            this.withdraw(request.getSourceAccountId(), request.getAmount());
+            return;
+        }
+
+        throw new IllegalArgumentException(ErrorMessage.TRANSACAO_NAO_ENCONTRADA.getMessage());
     }
 
-    private void transference(Account sourceAccount, Account destinationAccount, double amount) {
-        if (sourceAccount == null || destinationAccount == null)
+    private void transference(Long sourceAccountId, Long destinationAccountId, double amount) {
+        if (sourceAccountId == null || destinationAccountId == null)
             throw new IllegalArgumentException(ErrorMessage.CONTAS_DEVEM_SER_FORNECIDAS.getMessage());
 
         if (amount <= 0)
             throw new IllegalArgumentException(ErrorMessage.VALOR_MENOR_QUE_ZERO.getMessage());
+
+        Account sourceAccount = this.findAccount(sourceAccountId);
+        Account destinationAccount = this.findAccount(destinationAccountId);
 
         if (sourceAccount.getBalance() < amount)
             throw new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage());
@@ -78,17 +84,55 @@ public class TransactionServicesImpl implements TransactionServices {
         this.createTransaction(TransactionType.TRANSFER, amount, sourceAccount, destinationAccount);
     }
 
-    private void payment(Account sourceAccount, Account destinationAccount, double amount) {
-        if (sourceAccount == null || destinationAccount == null)
+    private void payment(Long sourceAccountId, Long destinationAccountId, double amount) {
+        if (sourceAccountId == null || destinationAccountId == null)
             throw new IllegalArgumentException(ErrorMessage.CONTAS_DEVEM_SER_FORNECIDAS.getMessage());
 
         if (amount <= 0)
             throw new IllegalArgumentException(ErrorMessage.VALOR_MENOR_QUE_ZERO.getMessage());
 
+        Account sourceAccount = this.findAccount(sourceAccountId);
+        Account destinationAccount = this.findAccount(destinationAccountId);
+
         if (sourceAccount.getBalance() < amount)
             throw new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage());
 
         this.createTransaction(TransactionType.PAYMENT, amount, sourceAccount, destinationAccount);
+    }
+
+    private void deposit(Long destinationAccountId, double amount) {
+        if(destinationAccountId == null)
+            throw new IllegalArgumentException(ErrorMessage.ACC_DESTINO_NECESSARIA.getMessage());
+
+        if (amount <= 0)
+            throw new IllegalArgumentException(ErrorMessage.VALOR_MENOR_QUE_ZERO.getMessage());
+
+        Account destinationAccount = this.findAccount(destinationAccountId);
+
+        this.createTransaction(TransactionType.DEPOSIT, amount, destinationAccount);
+    }
+
+    private void withdraw(Long sourceAccountId, double amount) {
+        if(sourceAccountId == null)
+            throw new IllegalArgumentException(ErrorMessage.ACC_ORIGEM_NECESSARIA.getMessage());
+
+        if (amount <= 0)
+            throw new IllegalArgumentException(ErrorMessage.VALOR_MENOR_QUE_ZERO.getMessage());
+
+        Account sourceAccount = this.findAccount(sourceAccountId);
+
+        if (sourceAccount.getBalance() < amount)
+            throw new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage());
+
+        this.createTransaction(TransactionType.WITHDRAW, -amount, sourceAccount);
+    }
+
+    private void createTransaction(TransactionType type, double amount, Account account) {
+        Transaction deposityTransaction = new Transaction(type, amount, LocalDateTime.now());
+        deposityTransaction.setSourceAccount(null);
+        deposityTransaction.setDestinationAccount(account);
+
+        this.saveTransaction(account, deposityTransaction, amount);
     }
 
     private void createTransaction(TransactionType type, double amount, Account sourceAccount, Account destinationAccount) {
@@ -114,6 +158,11 @@ public class TransactionServicesImpl implements TransactionServices {
 
         saveTransaction(sourceAccount, debitTransaction);
         saveTransaction(destinationAccount, creditTransaction);
+    }
+
+    private void saveTransaction(Account account, Transaction transaction, double amount) {
+        account.setBalance(account.getBalance() + amount);
+        this.saveTransaction(account, transaction);
     }
 
     private void saveTransaction(Account account, Transaction transaction) {
