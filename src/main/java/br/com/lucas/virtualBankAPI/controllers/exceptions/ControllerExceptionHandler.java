@@ -1,8 +1,7 @@
 package br.com.lucas.virtualBankAPI.controllers.exceptions;
 
-import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
-import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
-import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
+import br.com.lucas.virtualBankAPI.services.exceptions.*;
+import br.com.lucas.virtualBankAPI.services.exceptions.IllegalArgumentException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +27,18 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(DivergentDataException.class)
     public ResponseEntity<StandardError> divergentData(DivergentDataException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StandardError> illegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<StandardError> insufficientBalance(InsufficientBalanceException ex, HttpServletRequest request) {
         StandardError error = new StandardError(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

@@ -1,6 +1,7 @@
 package br.com.lucas.virtualBankAPI.domain.transactions;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
+import br.com.lucas.virtualBankAPI.enums.transactions.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,9 +17,10 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionId;
+    private Long id;
 
-    private String transactionType;
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
     private Double amount;
     private LocalDateTime timestamp;
 
@@ -29,4 +31,10 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "destination_account_id")
     private Account destinationAccount;
+
+    public Transaction(TransactionType transactionType, Double amount, LocalDateTime timestamp) {
+        this.transactionType = transactionType;
+        this.amount = amount;
+        this.timestamp = timestamp;
+    }
 }

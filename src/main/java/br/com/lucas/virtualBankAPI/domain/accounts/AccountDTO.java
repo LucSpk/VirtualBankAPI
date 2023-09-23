@@ -3,7 +3,7 @@ package br.com.lucas.virtualBankAPI.domain.accounts;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import lombok.*;
 
-@NoArgsConstructor @AllArgsConstructor @Getter
+@NoArgsConstructor @AllArgsConstructor @Getter @Setter
 public class AccountDTO {
 
     private Long id;
