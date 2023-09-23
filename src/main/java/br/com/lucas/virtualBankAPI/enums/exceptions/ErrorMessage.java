@@ -12,7 +12,10 @@ public enum ErrorMessage {
     VALOR_MENOR_QUE_ZERO("O valor da transferência deve ser maior que zero"),
     SALDO_INSUFICIENTE("Saldo insuficiente na conta de origem"),
     TRANSACAO_NAO_ENCONTRADA("A transação que esta tentando fazer não existe"),
-    NUMERO_ACC_INVALIDO("Número de conta inválido")
+    TRANSACAO_NECESSARIA("Tipo de transação não pode ser nula"),
+    NUMERO_ACC_INVALIDO("Número de conta inválido"),
+    ACC_DESTINO_NECESSARIA("Necessário inserir id da conta de destino"),
+    ACC_ORIGEM_NECESSARIA("Necessário inserir id da conta de origem")
     ;
 
     private final String message;
