@@ -33,33 +33,10 @@ public class TransactionController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping(value = "/{sourceAccountId}/{destinationAccount}")
-    public ResponseEntity<TransactionDTO> create(
-            @RequestBody TransactionDTO request,
-            @PathVariable Long sourceAccountId,
-            @PathVariable Long destinationAccount
-    ) {
-        TransactionDTO response = transactionServices.create(modelMapper.map(request, Transaction.class), sourceAccountId, destinationAccount);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<TransactionDTO> update(@RequestBody TransactionDTO request, @PathVariable Long id) {
-        TransactionDTO response = transactionServices.update(modelMapper.map(request, Transaction.class), id);
-        return ResponseEntity.ok().body(response);
-    }
-
-    @PutMapping
+    @PostMapping
     public ResponseEntity<?> transaction(@RequestBody TransactionRequest request) {
         transactionServices.transaction(request);
         return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        transactionServices.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
 }
