@@ -1,6 +1,5 @@
 package br.com.lucas.virtualBankAPI.controllers.transactions;
 
-import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionRequest;
 import br.com.lucas.virtualBankAPI.services.transactions.TransactionServices;
@@ -8,9 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController @RequestMapping("ap1/v1/transaction")
