@@ -10,8 +10,5 @@ public interface TransactionServices {
 
     TransactionDTO findById(Long id);
     List<TransactionDTO> findAll();
-    TransactionDTO create(Transaction transaction, Long sourceAccountId, Long destinationAccountId);
-    TransactionDTO update(Transaction transaction, Long id);
-    void delete(Long id);
     void transaction(TransactionRequest transaction);
 }
