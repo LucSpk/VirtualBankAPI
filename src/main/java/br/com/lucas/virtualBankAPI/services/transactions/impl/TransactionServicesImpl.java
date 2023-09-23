@@ -44,21 +44,6 @@ public class TransactionServicesImpl implements TransactionServices {
         return response.stream().map((trs) -> modelMapper.map(trs, TransactionDTO.class)).collect(Collectors.toList());
     }
 
-    @Override
-    public TransactionDTO create(Transaction transaction, Long sourceAccountId, Long destinationAccountId) {
-        return null;
-    }
-
-    @Override
-    public TransactionDTO update(Transaction transaction, Long id) {
-        return null;
-    }
-
-    @Override
-    public void delete(Long id) {
-
-    }
-
     public void transaction(TransactionRequest transaction) {
         Account sourceAccount = this.findAccount(transaction.getSourceAccountId());
         Account destinationAccount = this.findAccount(transaction.getDestinationAccountId());
@@ -70,9 +55,14 @@ public class TransactionServicesImpl implements TransactionServices {
         if(type == null)
             throw new IllegalArgumentException(ErrorMessage.TRANSACAO_NAO_ENCONTRADA.getMessage());
 
-        if(type.getValue() == 0)
+        if(type.getValue() == 0) {
             transference(sourceAccount, destinationAccount, amount);
-
+            return;
+        }
+        if(type.getValue() == 1) {
+            payment(sourceAccount, destinationAccount, amount);
+            return;
+        }
     }
 
     private void transference(Account sourceAccount, Account destinationAccount, double amount) {
@@ -85,16 +75,42 @@ public class TransactionServicesImpl implements TransactionServices {
         if (sourceAccount.getBalance() < amount)
             throw new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage());
 
-        Transaction debitTransaction = new Transaction(TransactionType.TRANSFER, -amount, LocalDateTime.now());
+        this.createTransaction(TransactionType.TRANSFER, amount, sourceAccount, destinationAccount);
+    }
+
+    private void payment(Account sourceAccount, Account destinationAccount, double amount) {
+        if (sourceAccount == null || destinationAccount == null)
+            throw new IllegalArgumentException(ErrorMessage.CONTAS_DEVEM_SER_FORNECIDAS.getMessage());
+
+        if (amount <= 0)
+            throw new IllegalArgumentException(ErrorMessage.VALOR_MENOR_QUE_ZERO.getMessage());
+
+        if (sourceAccount.getBalance() < amount)
+            throw new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage());
+
+        this.createTransaction(TransactionType.PAYMENT, amount, sourceAccount, destinationAccount);
+    }
+
+    private void createTransaction(TransactionType type, double amount, Account sourceAccount, Account destinationAccount) {
+
+        Transaction debitTransaction = new Transaction(type, -amount, LocalDateTime.now());
         debitTransaction.setSourceAccount(sourceAccount);
         debitTransaction.setDestinationAccount(destinationAccount);
 
-        Transaction creditTransaction = new Transaction(TransactionType.TRANSFER, amount, LocalDateTime.now());
+        Transaction creditTransaction = new Transaction(type, amount, LocalDateTime.now());
         creditTransaction.setSourceAccount(sourceAccount);
         creditTransaction.setDestinationAccount(destinationAccount);
 
-        sourceAccount.setBalance(sourceAccount.getBalance() - amount);
-        destinationAccount.setBalance(destinationAccount.getBalance() + amount);
+        this.saveTransaction(debitTransaction, creditTransaction);
+
+    }
+
+    private void saveTransaction(Transaction debitTransaction, Transaction creditTransaction) {
+        Account sourceAccount = debitTransaction.getSourceAccount();
+        sourceAccount.setBalance(sourceAccount.getBalance() - creditTransaction.getAmount());
+
+        Account destinationAccount = debitTransaction.getDestinationAccount();
+        destinationAccount.setBalance(destinationAccount.getBalance() + creditTransaction.getAmount());
 
         saveTransaction(sourceAccount, debitTransaction);
         saveTransaction(destinationAccount, creditTransaction);
@@ -106,6 +122,9 @@ public class TransactionServicesImpl implements TransactionServices {
     }
 
     private Account findAccount(Long id) {
+        if(id == null)
+            throw new IllegalArgumentException(ErrorMessage.NUMERO_ACC_INVALIDO.getMessage() + ": " + id);
+
         return modelMapper.map(accountServices.findById(id), Account.class);
     }
 
