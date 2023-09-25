@@ -2,7 +2,7 @@ package br.com.lucas.virtualBankAPI.controllers.accounts;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
-import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.services.accounts.AccountServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +54,8 @@ public class AccountController {
     }
 
     @GetMapping(value = "/transaction/{id}")
-    public ResponseEntity<List<TransactionDTO>> getTransactions(@PathVariable Long id) {
-        List<TransactionDTO> response = accountServices.getTransactions(id);
+    public ResponseEntity<List<TransactionResponseDTO>> getTransactions(@PathVariable Long id) {
+        List<TransactionResponseDTO> response = accountServices.getTransactions(id);
         return ResponseEntity.ok().body(response);
     }
 }
