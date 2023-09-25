@@ -1,6 +1,7 @@
 package br.com.lucas.virtualBankAPI.controllers.transactions;
 
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionRequest;
 import br.com.lucas.virtualBankAPI.enums.transactions.TransactionType;
 import br.com.lucas.virtualBankAPI.services.transactions.TransactionServices;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,10 +29,14 @@ class TransactionControllerTest {
     @Mock
     private TransactionServices services;
     private TransactionDTO transactionDTO;
+    private TransactionRequest request;
+
 
     private static final Long ID = 1L;
     private static final TransactionType TYPE = TransactionType.DEPOSIT;
     private static final Double AMOUNT = 100.0;
+    public static final Long ACC_ID = 1L;
+
 
     @BeforeEach
     void setUp() {
@@ -95,10 +100,16 @@ class TransactionControllerTest {
     }
 
     @Test
-    void transaction() {
+    void whenTransactionThenSuccess() {
+        doNothing().when(services).transaction(any());
+
+        ResponseEntity<?> response = controller.transaction(request);
+        verify(services, times(1)).transaction(any());
     }
 
     private void initializeVariables() {
         this.transactionDTO = new TransactionDTO(ID, TYPE.toString(), AMOUNT, LocalDateTime.now(), null, null);
+        this.request = new TransactionRequest(TransactionType.TRANSFER, ACC_ID, ACC_ID, AMOUNT);
+
     }
 }
