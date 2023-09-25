@@ -4,6 +4,7 @@ import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.accounts.AccountRepository;
@@ -77,7 +78,7 @@ public class AccountServicesImpl implements AccountServices {
     }
 
     @Override
-    public List<TransactionDTO> getTransactions(Long id) {
+    public List<TransactionResponseDTO> getTransactions(Long id) {
         Account account = modelMapper.map(this.findById(id), Account.class);
         List<Transaction> incomingTransactions = account.getIncomingTransactions();
         List<Transaction> outgoingTransactions = account.getOutgoingTransactions();
@@ -86,9 +87,9 @@ public class AccountServicesImpl implements AccountServices {
         transactions.addAll(incomingTransactions);
         transactions.addAll(outgoingTransactions);
 
-        //transactions.sort((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()));
+//        transactions.sort((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()));
 
-        return transactions.stream().map((trs) -> modelMapper.map(trs, TransactionDTO.class)).collect(Collectors.toList());
+        return transactions.stream().map((trs) -> modelMapper.map(trs, TransactionResponseDTO.class)).collect(Collectors.toList());
     }
 
     private void accIsPresent(Account account) {
