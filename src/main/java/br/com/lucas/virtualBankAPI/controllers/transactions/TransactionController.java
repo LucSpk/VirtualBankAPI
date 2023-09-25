@@ -14,8 +14,6 @@ import java.util.List;
 public class TransactionController {
 
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
     private TransactionServices transactionServices;
 
     @GetMapping(value = "/{id}")
