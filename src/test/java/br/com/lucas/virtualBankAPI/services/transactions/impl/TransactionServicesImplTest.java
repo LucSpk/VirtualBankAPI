@@ -54,10 +54,6 @@ class TransactionServicesImplTest {
     public static final Long ACC_ID = 1L;
     public static final String ACC_NUMBER = "123456";
     public static final Double BALANCE = 1000.0;
-    public static final Integer USER_ID = 1;
-    public static final String USER_NAME = "userTest";
-    public static final String USER_EMAIL = "test@email.com";
-    public static final String USER_PASSWORD = "123456";
 
     @BeforeEach
     void setUp() {
