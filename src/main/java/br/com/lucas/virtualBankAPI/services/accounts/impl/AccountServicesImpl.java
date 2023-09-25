@@ -2,6 +2,9 @@ package br.com.lucas.virtualBankAPI.services.accounts.impl;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
 import br.com.lucas.virtualBankAPI.repositories.accounts.AccountRepository;
@@ -14,9 +17,9 @@ import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.util.ArrayUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,6 +75,21 @@ public class AccountServicesImpl implements AccountServices {
     public void delete(Long id) {
         this.findById(id);
         accountRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TransactionResponseDTO> getTransactions(Long id) {
+        Account account = modelMapper.map(this.findById(id), Account.class);
+        List<Transaction> incomingTransactions = account.getIncomingTransactions();
+        List<Transaction> outgoingTransactions = account.getOutgoingTransactions();
+
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.addAll(incomingTransactions);
+        transactions.addAll(outgoingTransactions);
+
+//        transactions.sort((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()));
+
+        return transactions.stream().map((trs) -> modelMapper.map(trs, TransactionResponseDTO.class)).collect(Collectors.toList());
     }
 
     private void accIsPresent(Account account) {

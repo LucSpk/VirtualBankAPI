@@ -109,7 +109,7 @@ public class TransactionServicesImpl implements TransactionServices {
 
         Account destinationAccount = this.findAccount(destinationAccountId);
 
-        this.createTransaction(TransactionType.DEPOSIT, amount, destinationAccount);
+        this.createTransactionCredit(amount, destinationAccount);
     }
 
     private void withdraw(Long sourceAccountId, double amount) {
@@ -124,15 +124,23 @@ public class TransactionServicesImpl implements TransactionServices {
         if (sourceAccount.getBalance() < amount)
             throw new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage());
 
-        this.createTransaction(TransactionType.WITHDRAW, -amount, sourceAccount);
+        this.createTransactionDebit(amount, sourceAccount);
     }
 
-    private void createTransaction(TransactionType type, double amount, Account account) {
-        Transaction deposityTransaction = new Transaction(type, amount, LocalDateTime.now());
+    private void createTransactionCredit(double amount, Account account) {
+        Transaction deposityTransaction = new Transaction(TransactionType.DEPOSIT, -amount, LocalDateTime.now());
         deposityTransaction.setSourceAccount(null);
         deposityTransaction.setDestinationAccount(account);
 
         this.saveTransaction(account, deposityTransaction, amount);
+    }
+
+    private void createTransactionDebit(double amount, Account account) {
+        Transaction withdrawTransaction = new Transaction(TransactionType.WITHDRAW, amount, LocalDateTime.now());
+        withdrawTransaction.setSourceAccount(account);
+        withdrawTransaction.setDestinationAccount(null);
+
+        this.saveTransaction(account, withdrawTransaction, amount);
     }
 
     private void createTransaction(TransactionType type, double amount, Account sourceAccount, Account destinationAccount) {
@@ -156,8 +164,8 @@ public class TransactionServicesImpl implements TransactionServices {
         Account destinationAccount = debitTransaction.getDestinationAccount();
         destinationAccount.setBalance(destinationAccount.getBalance() + creditTransaction.getAmount());
 
-        saveTransaction(sourceAccount, debitTransaction);
-        saveTransaction(destinationAccount, creditTransaction);
+        this.saveTransaction(sourceAccount, debitTransaction);
+        this.saveTransaction(destinationAccount, creditTransaction);
     }
 
     private void saveTransaction(Account account, Transaction transaction, double amount) {

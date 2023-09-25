@@ -1,9 +1,8 @@
 package br.com.lucas.virtualBankAPI.controllers.exceptions;
 
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
-import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
-import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
-import br.com.lucas.virtualBankAPI.services.exceptions.ObjectNotFoundException;
+import br.com.lucas.virtualBankAPI.services.exceptions.*;
+import br.com.lucas.virtualBankAPI.services.exceptions.IllegalArgumentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -74,6 +73,40 @@ class ControllerExceptionHandlerTest {
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(StandardError.class, response.getBody().getClass());
         assertEquals(ErrorMessage.DIVERGENCIA_NOS_DADOS.getMessage(), response.getBody().getError());
+        assertEquals(400, response.getBody().getStatus());
+    }
+
+    @Test
+    void whenIllegalArgumentReturnAResponseEntity() {
+        ResponseEntity<StandardError> response = controllerExceptionHandler
+                .illegalArgument(
+                        new IllegalArgumentException(ErrorMessage.TRANSACAO_NECESSARIA.getMessage()),
+                        new MockHttpServletRequest()
+                );
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals(ErrorMessage.TRANSACAO_NECESSARIA.getMessage(), response.getBody().getError());
+        assertEquals(400, response.getBody().getStatus());
+    }
+
+    @Test
+    void whenInsufficientBalanceReturnAResponseEntity() {
+        ResponseEntity<StandardError> response = controllerExceptionHandler
+                .insufficientBalance(
+                        new InsufficientBalanceException(ErrorMessage.SALDO_INSUFICIENTE.getMessage()),
+                        new MockHttpServletRequest()
+                );
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals(ErrorMessage.SALDO_INSUFICIENTE.getMessage(), response.getBody().getError());
         assertEquals(400, response.getBody().getStatus());
     }
 }
