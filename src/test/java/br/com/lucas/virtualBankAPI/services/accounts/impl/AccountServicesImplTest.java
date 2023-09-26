@@ -2,9 +2,12 @@ package br.com.lucas.virtualBankAPI.services.accounts.impl;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.exceptions.ErrorMessage;
+import br.com.lucas.virtualBankAPI.enums.transactions.TransactionType;
 import br.com.lucas.virtualBankAPI.repositories.accounts.AccountRepository;
 import br.com.lucas.virtualBankAPI.services.exceptions.DataIntegrityViolationException;
 import br.com.lucas.virtualBankAPI.services.exceptions.DivergentDataException;
@@ -19,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +57,11 @@ class AccountServicesImplTest {
     public static final String USER_NAME = "userTest";
     public static final String USER_EMAIL = "test@email.com";
     public static final String USER_PASSWORD = "123456";
+    private static final Long TRS_IN_ID = 1L;
+    private static final Long TRS_OUT_ID = 2L;
+    private static final TransactionType TRS_IN_TYPE = TransactionType.DEPOSIT;
+    private static final TransactionType TRS_OUT_TYPE = TransactionType.WITHDRAW;
+    private static final Double TRS_AMOUNT = 50.0;
 
     @BeforeEach
     void setupEach() {
@@ -201,13 +210,13 @@ class AccountServicesImplTest {
         when(repository.findById(anyLong())).thenReturn(Optional.of(account));
         doNothing().when(repository).deleteById(anyLong());
 
-        repository.deleteById(ID);
+        services.delete(ID);
 
         verify(repository, times(1)).deleteById(anyLong());
     }
 
     @Test
-    public void whenDeleteTherReturnObjectNotFoundException() {
+    public void whenDeleteThenReturnObjectNotFoundException() {
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
 
         try {
@@ -218,16 +227,33 @@ class AccountServicesImplTest {
         }
     }
 
+    @Test
+    public void whenGetTransactionsThenReturnTransactionResponseDTO() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(account));
+
+        List<TransactionResponseDTO> response = services.getTransactions(ID);
+
+        assertNotNull(response);
+        assertEquals(4, response.size());
+    }
+
     private void initializeVariables() {
         this.account = new Account(ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
         this.existingAccount = new Account((ID + 1), ACC_NUMBER, BALANCE);
         this.usuario = new Usuario(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD);
         this.usuarioDTO = new UsuarioDTO(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD);
+
+        Transaction transaction01 = new Transaction(TRS_IN_ID, TRS_IN_TYPE, TRS_AMOUNT, LocalDateTime.now(), null, null);
+        Transaction transaction02 = new Transaction(TRS_OUT_ID, TRS_OUT_TYPE, TRS_AMOUNT, LocalDateTime.now().plusMinutes(30), null, null);
+
+        account.setIncomingTransactions(List.of(transaction01, transaction02));
+        account.setOutgoingTransactions(List.of(transaction01, transaction02));
     }
 
     private void setModelMapper() {
         when(modelMapper.map(account, AccountDTO.class)).thenReturn(accountDTO);
+        when(modelMapper.map(accountDTO, Account.class)).thenReturn(account);
         when(modelMapper.map(usuarioDTO, Usuario.class)).thenReturn(usuario);
     }
 }
