@@ -2,6 +2,7 @@ package br.com.lucas.virtualBankAPI.services.accounts.impl;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
+import br.com.lucas.virtualBankAPI.domain.accounts.AccountInfoDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.Transaction;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
@@ -49,6 +50,7 @@ class AccountServicesImplTest {
     private AccountDTO accountDTO;
     private Usuario usuario;
     private UsuarioDTO usuarioDTO;
+    private AccountInfoDTO accountInfoDTO;
 
     public static final Long ID = 1L;
     public static final String ACC_NUMBER = "123456";
@@ -237,6 +239,12 @@ class AccountServicesImplTest {
         assertEquals(4, response.size());
     }
 
+    @Test
+    public void testAccountInfoDTO() {
+        assertEquals(this.account.getAccNumber(), this.accountInfoDTO.getAccNumber());
+        assertEquals(this.usuario.getName(), this.accountInfoDTO.getOwnerName());
+    }
+
     private void initializeVariables() {
         this.account = new Account(ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
@@ -249,6 +257,8 @@ class AccountServicesImplTest {
 
         account.setIncomingTransactions(List.of(transaction01, transaction02));
         account.setOutgoingTransactions(List.of(transaction01, transaction02));
+
+        this.accountInfoDTO = new AccountInfoDTO(this.account.getAccNumber(), this.usuario.getName());
     }
 
     private void setModelMapper() {
