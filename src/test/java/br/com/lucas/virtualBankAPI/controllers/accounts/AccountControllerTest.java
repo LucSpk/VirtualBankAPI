@@ -42,7 +42,6 @@ class AccountControllerTest {
     @Mock
     private UserServices userServices;
 
-    private Account account;
     private AccountDTO accountDTO;
     private UsuarioDTO usuarioDTO;
     private TransactionResponseDTO transactionResponseDTO;
@@ -198,7 +197,6 @@ class AccountControllerTest {
     }
 
     private void initializeVariables() {
-        this.account = new Account(ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
         this.usuarioDTO = new UsuarioDTO(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD);
         this.transactionResponseDTO = new TransactionResponseDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, TIME_STAMP, null, null);
