@@ -2,6 +2,7 @@ package br.com.lucas.virtualBankAPI.controllers.accounts;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
@@ -49,6 +50,7 @@ class AccountControllerTest {
     private AccountDTO accountDTO;
     private UsuarioDTO usuarioDTO;
     private TransactionResponseDTO transactionResponseDTO;
+    private TransactionDTO transactionDTO;
 
     public static final Long ID = 1L;
     public static final String ACC_NUMBER = "123456";
@@ -180,16 +182,24 @@ class AccountControllerTest {
         verify(services, times(1)).getTransactions(ID);
     }
 
+    @Test
+    public void testListOfTransactionsForAccountDTO() {
+        assertEquals(this.transactionDTO, this.accountDTO.getIncomingTransactions().get(0));
+        assertEquals(this.transactionDTO, this.accountDTO.getOutgoingTransactions().get(0));
+    }
+
     private void setModelMapper() {
         when(modelMapper.map(accountDTO, Account.class)).thenReturn(account);
         when(modelMapper.map(account, AccountDTO.class)).thenReturn(accountDTO);
     }
-
 
     private void initializeVariables() {
         this.account = new Account(ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
         this.usuarioDTO = new UsuarioDTO(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD);
         this.transactionResponseDTO = new TransactionResponseDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, LocalDateTime.now(), null, null);
+        this.transactionDTO = new TransactionDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, LocalDateTime.now(), null, null);
+        this.accountDTO.setIncomingTransactions(List.of(this.transactionDTO));
+        this.accountDTO.setOutgoingTransactions(List.of(this.transactionDTO));
     }
 }
