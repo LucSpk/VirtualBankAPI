@@ -2,8 +2,10 @@ package br.com.lucas.virtualBankAPI.controllers.accounts;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
+import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
 import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
+import br.com.lucas.virtualBankAPI.enums.transactions.TransactionType;
 import br.com.lucas.virtualBankAPI.services.accounts.AccountServices;
 import br.com.lucas.virtualBankAPI.services.accounts.impl.AccountServicesImpl;
 import br.com.lucas.virtualBankAPI.services.users.UserServices;
@@ -20,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +48,7 @@ class AccountControllerTest {
     private Account account;
     private AccountDTO accountDTO;
     private UsuarioDTO usuarioDTO;
-
+    private TransactionResponseDTO transactionResponseDTO;
 
     public static final Long ID = 1L;
     public static final String ACC_NUMBER = "123456";
@@ -53,6 +57,9 @@ class AccountControllerTest {
     public static final String USER_NAME = "userTest";
     public static final String USER_EMAIL = "test@email.com";
     public static final String USER_PASSWORD = "123456";
+    private static final Long TRS_ID = 1L;
+    private static final TransactionType TRS_TYPE = TransactionType.DEPOSIT;
+    private static final Double TRS_AMOUNT = 50.0;
 
     @BeforeEach
     void setUp() {
@@ -158,6 +165,21 @@ class AccountControllerTest {
         verify(services, times(1)).delete(anyLong());
     }
 
+    @Test
+    void whenGetTransactionsThenReturnAnListNomEmpty() {
+        when(services.getTransactions(anyLong())).thenReturn(List.of(this.transactionResponseDTO));
+
+        ResponseEntity<List<TransactionResponseDTO>> response = controller.getTransactions(ID);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertNotNull(response.getBody());
+        assertEquals(TransactionResponseDTO.class, response.getBody().get(0).getClass());
+
+        verify(services, times(1)).getTransactions(ID);
+    }
+
     private void setModelMapper() {
         when(modelMapper.map(accountDTO, Account.class)).thenReturn(account);
         when(modelMapper.map(account, AccountDTO.class)).thenReturn(accountDTO);
@@ -168,5 +190,6 @@ class AccountControllerTest {
         this.account = new Account(ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
         this.usuarioDTO = new UsuarioDTO(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD);
+        this.transactionResponseDTO = new TransactionResponseDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, LocalDateTime.now(), null, null);
     }
 }
