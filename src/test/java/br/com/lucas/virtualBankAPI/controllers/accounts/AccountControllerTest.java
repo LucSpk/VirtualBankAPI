@@ -2,19 +2,17 @@ package br.com.lucas.virtualBankAPI.controllers.accounts;
 
 import br.com.lucas.virtualBankAPI.domain.accounts.Account;
 import br.com.lucas.virtualBankAPI.domain.accounts.AccountDTO;
+import br.com.lucas.virtualBankAPI.domain.accounts.AccountInfoDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionDTO;
 import br.com.lucas.virtualBankAPI.domain.transactions.TransactionResponseDTO;
-import br.com.lucas.virtualBankAPI.domain.users.Usuario;
 import br.com.lucas.virtualBankAPI.domain.users.UsuarioDTO;
 import br.com.lucas.virtualBankAPI.enums.transactions.TransactionType;
-import br.com.lucas.virtualBankAPI.services.accounts.AccountServices;
 import br.com.lucas.virtualBankAPI.services.accounts.impl.AccountServicesImpl;
 import br.com.lucas.virtualBankAPI.services.users.UserServices;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,11 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -51,6 +47,8 @@ class AccountControllerTest {
     private UsuarioDTO usuarioDTO;
     private TransactionResponseDTO transactionResponseDTO;
     private TransactionDTO transactionDTO;
+    private AccountInfoDTO accountInfoDestinationDTO;
+    private AccountInfoDTO accountInfoSourceDTO;
 
     public static final Long ID = 1L;
     public static final String ACC_NUMBER = "123456";
@@ -62,6 +60,9 @@ class AccountControllerTest {
     private static final Long TRS_ID = 1L;
     private static final TransactionType TRS_TYPE = TransactionType.DEPOSIT;
     private static final Double TRS_AMOUNT = 50.0;
+    private static final LocalDateTime TIME_STAMP = LocalDateTime.now();
+    public static final String ACC_NUMBER_2 = "654321";
+    public static final String USER_NAME_2 = "TestUser";
 
     @BeforeEach
     void setUp() {
@@ -179,6 +180,14 @@ class AccountControllerTest {
         assertNotNull(response.getBody());
         assertEquals(TransactionResponseDTO.class, response.getBody().get(0).getClass());
 
+        TransactionResponseDTO firstElement = response.getBody().get(0);
+        assertEquals(TRS_ID, firstElement.getId());
+        assertEquals(TRS_TYPE.toString(), firstElement.getTransactionType());
+        assertEquals(TRS_AMOUNT, firstElement.getAmount());
+        assertEquals(TIME_STAMP, firstElement.getTimestamp());
+        assertEquals(this.accountInfoDestinationDTO, firstElement.getDestinationAccount());
+        assertEquals(this.accountInfoSourceDTO, firstElement.getSourceAccount());
+
         verify(services, times(1)).getTransactions(ID);
     }
 
@@ -188,18 +197,17 @@ class AccountControllerTest {
         assertEquals(this.transactionDTO, this.accountDTO.getOutgoingTransactions().get(0));
     }
 
-    private void setModelMapper() {
-        when(modelMapper.map(accountDTO, Account.class)).thenReturn(account);
-        when(modelMapper.map(account, AccountDTO.class)).thenReturn(accountDTO);
-    }
-
     private void initializeVariables() {
         this.account = new Account(ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ID, ACC_NUMBER, BALANCE);
         this.usuarioDTO = new UsuarioDTO(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD);
-        this.transactionResponseDTO = new TransactionResponseDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, LocalDateTime.now(), null, null);
-        this.transactionDTO = new TransactionDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, LocalDateTime.now(), null, null);
+        this.transactionResponseDTO = new TransactionResponseDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, TIME_STAMP, null, null);
+        this.transactionDTO = new TransactionDTO(TRS_ID, TRS_TYPE.toString(), TRS_AMOUNT, TIME_STAMP, null, null);
         this.accountDTO.setIncomingTransactions(List.of(this.transactionDTO));
         this.accountDTO.setOutgoingTransactions(List.of(this.transactionDTO));
+        this.accountInfoDestinationDTO = new AccountInfoDTO(ACC_NUMBER, USER_NAME);
+        this.accountInfoSourceDTO = new AccountInfoDTO(ACC_NUMBER_2, USER_NAME_2);
+        this.transactionResponseDTO.setDestinationAccount(this.accountInfoDestinationDTO);
+        this.transactionResponseDTO.setSourceAccount(this.accountInfoSourceDTO);
     }
 }
