@@ -54,6 +54,7 @@ class TransactionServicesImplTest {
     public static final Long ACC_ID = 1L;
     public static final String ACC_NUMBER = "123456";
     public static final Double BALANCE = 1000.0;
+    public static final LocalDateTime TIME_STAMP = LocalDateTime.now();
 
     @BeforeEach
     void setUp() {
@@ -328,16 +329,28 @@ class TransactionServicesImplTest {
         }
     }
 
+    @Test
+    public void testTransactionsFields() {
+        assertEquals(ID, this.transaction.getId());
+        assertEquals(TYPE, this.transaction.getTransactionType());
+        assertEquals(AMOUNT, this.transaction.getAmount());
+        assertEquals(TIME_STAMP, this.transaction.getTimestamp());
+        assertEquals(this.account, this.transaction.getSourceAccount());
+        assertEquals(this.account, this.transaction.getDestinationAccount());
+    }
     private void configureModelMapper() {
         when(modelMapper.map(transaction, TransactionDTO.class)).thenReturn(transactionDTO);
         when(modelMapper.map(accountDTO, Account.class)).thenReturn(account);
     }
 
     private void initializeVariables() {
-        this.transaction = new Transaction(ID, TYPE, AMOUNT, LocalDateTime.now(), null, null);
-        this.transactionDTO = new TransactionDTO(ID, TYPE.toString(), AMOUNT, LocalDateTime.now(), null, null);
+        this.transaction = new Transaction(ID, TYPE, AMOUNT, TIME_STAMP, null, null);
+        this.transactionDTO = new TransactionDTO(ID, TYPE.toString(), AMOUNT, TIME_STAMP, null, null);
         this.request = new TransactionRequest(TransactionType.TRANSFER, ACC_ID, ACC_ID, AMOUNT);
         this.account = new Account(ACC_ID, ACC_NUMBER, BALANCE);
         this.accountDTO = new AccountDTO(ACC_ID, ACC_NUMBER, BALANCE);
+
+        this.transaction.setDestinationAccount(this.account);
+        this.transaction.setSourceAccount(this.account);
     }
 }

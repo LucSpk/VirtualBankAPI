@@ -156,7 +156,7 @@ class UserServicesImplTest {
     }
 
     @Test
-    void whenDeleteWithSucess() {
+    void whenDeleteWithSuccess() {
         when(repository.findById(anyInt())).thenReturn(Optional.of(usuario));
         Mockito.doNothing().when(repository).deleteById(anyInt());
 

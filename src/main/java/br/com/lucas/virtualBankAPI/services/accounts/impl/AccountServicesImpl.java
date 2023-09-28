@@ -87,7 +87,7 @@ public class AccountServicesImpl implements AccountServices {
         transactions.addAll(incomingTransactions);
         transactions.addAll(outgoingTransactions);
 
-//        transactions.sort((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()));
+        transactions.sort((o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()));
 
         return transactions.stream().map((trs) -> modelMapper.map(trs, TransactionResponseDTO.class)).collect(Collectors.toList());
     }
